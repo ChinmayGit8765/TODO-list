@@ -1,0 +1,48 @@
+@let t = todo();
+<div class="border-t border-slate-200 bg-slate-50 px-4 py-3">
+  @if (t.subTasks.length > 0) {
+    <ol class="mb-3 flex flex-col gap-0.5">
+      @for (sub of t.subTasks; track sub.id) {
+        <li class="flex items-center justify-between rounded px-2 py-1 hover:bg-white">
+          <label class="flex flex-1 cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              class="h-4 w-4 cursor-pointer"
+              [checked]="sub.isComplete"
+              (change)="toggleSub.emit(sub.id)"
+            />
+            <span
+              class="text-sm"
+              [class.line-through]="sub.isComplete"
+              [class.text-slate-400]="sub.isComplete"
+            >{{ sub.title }}</span>
+          </label>
+          <button
+            type="button"
+            class="rounded px-1.5 py-0.5 text-sm text-slate-400 hover:bg-red-50 hover:text-red-600"
+            (click)="removeSub.emit(sub.id)"
+            [attr.aria-label]="'Delete subtask ' + sub.title"
+          >✕</button>
+        </li>
+      }
+    </ol>
+  } @else {
+    <p class="mb-3 text-sm italic text-slate-500">No subtasks yet — add one below to break this down.</p>
+  }
+
+  <form class="flex gap-2" (submit)="onAdd(); $event.preventDefault()">
+    <input
+      type="text"
+      class="flex-1 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      placeholder="Add a subtask…"
+      [ngModel]="draftTitle()"
+      (ngModelChange)="draftTitle.set($event)"
+      [ngModelOptions]="{ standalone: true }"
+    />
+    <button
+      type="submit"
+      class="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed"
+      [disabled]="!draftTitle().trim()"
+    >Add</button>
+  </form>
+</div>

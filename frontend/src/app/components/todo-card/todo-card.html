@@ -1,0 +1,68 @@
+@let t = todo();
+<div class="flex items-center gap-3 p-3 hover:bg-slate-50">
+  <div class="flex shrink-0 items-center">
+    @if (t.subTasks.length === 0) {
+      <input
+        type="checkbox"
+        class="h-4 w-4 cursor-pointer"
+        [checked]="t.isComplete"
+        (change)="toggleComplete.emit()"
+        [attr.aria-label]="'Mark ' + t.title + ' complete'"
+      />
+    } @else {
+      <span
+        class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium tabular-nums text-slate-600"
+        aria-label="Subtask progress"
+      >
+        {{ progress().done }}/{{ progress().total }}
+      </span>
+    }
+  </div>
+
+  <div class="flex min-w-0 flex-1 items-center justify-between gap-3">
+    <span
+      class="truncate"
+      [class.line-through]="isDone()"
+      [class.text-slate-400]="isDone()"
+    >{{ t.title }}</span>
+    @if (t.dueAt) {
+      <span
+        class="shrink-0 text-xs"
+        [class.text-slate-500]="!isOverdue()"
+        [class.text-red-600]="isOverdue()"
+        [class.font-semibold]="isOverdue()"
+      >
+        Due {{ t.dueAt | date: 'mediumDate' }}
+      </span>
+    }
+  </div>
+
+  <div class="flex shrink-0 items-center gap-0.5">
+    <button
+      type="button"
+      class="flex h-7 min-w-7 items-center justify-center rounded px-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-600"
+      [attr.data-active]="isExpanded()"
+      [attr.aria-expanded]="isExpanded()"
+      [attr.aria-label]="(isExpanded() ? 'Hide' : 'Show') + ' subtasks for ' + t.title"
+      title="Subtasks"
+      (click)="toggleExpand.emit()"
+    >
+      <span class="inline-block transition-transform" [class.rotate-180]="isExpanded()">▾</span>
+    </button>
+    <button
+      type="button"
+      class="h-7 min-w-7 rounded px-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-900 data-[active=true]:bg-blue-100 data-[active=true]:text-blue-600"
+      [attr.data-active]="isEditing()"
+      [attr.aria-label]="(isEditing() ? 'Stop editing ' : 'Edit ') + t.title"
+      title="Edit"
+      (click)="toggleEdit.emit()"
+    >✎</button>
+    <button
+      type="button"
+      class="h-7 min-w-7 rounded px-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600"
+      [attr.aria-label]="'Delete ' + t.title"
+      title="Delete"
+      (click)="remove.emit()"
+    >✕</button>
+  </div>
+</div>

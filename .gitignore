@@ -1,0 +1,25 @@
+# Node
+node_modules/
+npm-debug.log*
+.npm/
+
+# Angular / Vite / Vitest build output
+dist/
+.angular/
+*.log
+coverage/
+
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+
+# Editor / OS
+.vs/
+.idea/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+.DS_Store
+Thumbs.db

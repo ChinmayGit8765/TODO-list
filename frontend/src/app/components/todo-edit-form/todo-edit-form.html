@@ -1,0 +1,55 @@
+<form
+  class="flex flex-col gap-3 border-t border-slate-200 bg-slate-50 px-4 py-3"
+  (submit)="onSubmit(); $event.preventDefault()"
+>
+  <label class="flex flex-col gap-1">
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Title</span>
+    <input
+      type="text"
+      class="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      [ngModel]="draftTitle()"
+      (ngModelChange)="draftTitle.set($event)"
+      [ngModelOptions]="{ standalone: true }"
+      required
+    />
+  </label>
+
+  <label class="flex flex-col gap-1">
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Due date</span>
+    <input
+      type="date"
+      class="w-fit rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      [ngModel]="draftDueAt()"
+      (ngModelChange)="draftDueAt.set($event)"
+      [ngModelOptions]="{ standalone: true }"
+    />
+  </label>
+
+  <label class="flex flex-col gap-1">
+    <span class="text-xs font-semibold uppercase tracking-wide text-slate-500">Notes</span>
+    <textarea
+      rows="3"
+      class="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+      [ngModel]="draftNotes()"
+      (ngModelChange)="draftNotes.set($event)"
+      [ngModelOptions]="{ standalone: true }"
+      placeholder="Any extra context, references, links…"
+    ></textarea>
+  </label>
+
+  @if (error()) {
+    <div class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">{{ error() }}</div>
+  }
+
+  <div class="flex justify-end gap-2">
+    <button
+      type="button"
+      class="rounded-md bg-slate-200 px-4 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-300"
+      (click)="cancel.emit()"
+    >Cancel</button>
+    <button
+      type="submit"
+      class="rounded-md bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+    >Save</button>
+  </div>
+</form>

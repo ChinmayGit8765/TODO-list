@@ -1,0 +1,99 @@
+<section class="mx-auto max-w-2xl p-6">
+  <header class="mb-4">
+    <h1 class="m-0 text-3xl font-semibold">Things to do</h1>
+    <p class="m-0 mt-1 text-slate-500">Use ▾ to expand subtasks. Use ✎ to edit a task.</p>
+  </header>
+
+  <div class="mb-4 flex gap-1 border-b border-slate-200" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="-mb-px flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 text-sm text-slate-500 hover:text-slate-900 data-[active=true]:border-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-600"
+      [attr.data-active]="view() === 'active'"
+      [attr.aria-selected]="view() === 'active'"
+      (click)="view.set('active')"
+    >
+      Active
+      <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs tabular-nums text-slate-600">{{ activeTodos().length }}</span>
+    </button>
+    <button
+      type="button"
+      role="tab"
+      class="-mb-px flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 text-sm text-slate-500 hover:text-slate-900 data-[active=true]:border-blue-600 data-[active=true]:font-semibold data-[active=true]:text-blue-600"
+      [attr.data-active]="view() === 'completed'"
+      [attr.aria-selected]="view() === 'completed'"
+      (click)="view.set('completed')"
+    >
+      Completed
+      <span class="rounded-full bg-slate-200 px-2 py-0.5 text-xs tabular-nums text-slate-600">{{ completedTodos().length }}</span>
+    </button>
+  </div>
+
+  @if (view() === 'active') {
+    <form class="mb-4 flex gap-2" (submit)="addTodo(); $event.preventDefault()">
+      <input
+        type="text"
+        class="flex-1 rounded-md border border-slate-300 bg-white px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        placeholder="What needs doing?"
+        [ngModel]="newTitle()"
+        (ngModelChange)="newTitle.set($event)"
+        name="newTitle"
+        aria-label="New todo title"
+      />
+      <button
+        type="submit"
+        class="rounded-md bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 disabled:bg-slate-400 disabled:cursor-not-allowed"
+        [disabled]="!newTitle().trim()"
+      >Add</button>
+    </form>
+  }
+
+  @if (error()) {
+    <div class="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="py-8 text-center text-slate-500">Loading…</p>
+  } @else if (visibleTodos().length === 0) {
+    <p class="py-8 text-center text-slate-500">
+      @if (view() === 'active') {
+        No active todos. Add one above.
+      } @else {
+        Nothing completed yet — check things off to see them here.
+      }
+    </p>
+  } @else {
+    <ul class="flex flex-col gap-2">
+      @for (todo of visibleTodos(); track todo.id) {
+        <li class="overflow-hidden rounded-lg border border-slate-200 bg-white">
+          <app-todo-card
+            [todo]="todo"
+            [isExpanded]="isExpanded(todo.id)"
+            [isEditing]="editingId() === todo.id"
+            (toggleComplete)="onToggleComplete(todo)"
+            (toggleExpand)="onToggleExpand(todo.id)"
+            (toggleEdit)="onToggleEdit(todo.id)"
+            (remove)="onDelete(todo.id)"
+          />
+
+          @if (editingId() === todo.id) {
+            <app-todo-edit-form
+              [todo]="todo"
+              (save)="onSaveEdit(todo.id, $event)"
+              (cancel)="editingId.set(null)"
+            />
+          }
+
+          @if (isExpanded(todo.id)) {
+            <app-sub-task-list
+              [todo]="todo"
+              (addSub)="onAddSubTask(todo.id, $event)"
+              (toggleSub)="onToggleSubTask(todo.id, $event)"
+              (removeSub)="onDeleteSubTask(todo.id, $event)"
+            />
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>
