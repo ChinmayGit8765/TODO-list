@@ -4,10 +4,10 @@ A small TODO list app with an Angular front-end and a .NET Web API back-end.
 Tasks live in memory inside the API and reset on each restart — no database
 is required.
 
-> Built for an interview take-home. The goal was a "simple" CRUD app done
-> with conventions a reviewer would expect to see in a real codebase:
-> proper layering on the back end, presentational components on the
-> front end, real tests on both sides.
+> The point of this repo: take a deliberately "simple" CRUD app and build it
+> with the conventions of a real production codebase — proper layering on the
+> back end, presentational components on the front end, real tests on both
+> sides. Small scope, no shortcuts.
 
 ---
 
